@@ -1,0 +1,55 @@
+---
+- name: Uninstall Git, Docker, and Dependencies
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Remove Docker container
+      community.docker.docker_container:
+        name: hello-world-container-new
+        state: absent
+
+    - name: Remove Docker image
+      community.docker.docker_image:
+        name: peernitzanim/hello-world
+        tag: latest
+        state: absent
+
+    - name: Remove Docker CE
+      apt:
+        name: ['docker-ce', 'docker-ce-cli', 'containerd.io']
+        state: absent
+
+    - name: Remove Docker prerequisites
+      apt:
+        name: ['apt-transport-https', 'ca-certificates', 'curl', 'gnupg2', 'software-properties-common']
+        state: absent
+
+    - name: Remove docker-compose
+      pip:
+        name: docker-compose
+        state: absent
+
+    - name: Remove yum-utils (dnf)
+      apt:
+        name: dnf
+        state: absent
+
+    - name: Remove dependencies
+      apt:
+        name: ['python3', 'python3-pip']
+        state: absent
+
+    - name: Remove Git
+      apt:
+        name: git
+        state: absent
+
+    - name: Remove SSH private key
+      file:
+        path: /home/ubuntu/.ssh/peer_computer.pem
+        state: absent
+
+    - name: Remove cloned repository
+      file:
+        path: /home/ubuntu/test
+        state: absent
